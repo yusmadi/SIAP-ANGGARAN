@@ -1,0 +1,95 @@
+# Walkthrough Implementation - Tahap 1: Fondasi & Autentikasi RBAC
+
+Selesai mengerjakan **Tahap 1: Fondasi & Autentikasi RBAC** untuk aplikasi **SIAP-PAGU** (*Sistem Informasi Akuntabilitas Perencanaan & Pagu Anggaran*) sesuai spesifikasi [PROJECT_DEVELOPMENT_PLAN_SIAP_PAGU.md](file:///d:/vibe-coding/SIAP-PAGU/PROJECT_DEVELOPMENT_PLAN_SIAP_PAGU.md).
+
+---
+
+## Ringkasan Pekerjaan yang Diselesaikan
+
+### 1. Setup Framework & Environment CodeIgniter 4
+- Menginisialisasi CodeIgniter 4.7.4 dengan konfigurasi environment [.env](file:///d:/vibe-coding/SIAP-PAGU/.env).
+- Mengaktifkan proteksi CSRF berbasis session dengan auto-token regeneration.
+- Mengamankan session cookie (`siap_pagu_session`) dengan durasi 7200 detik.
+
+### 2. Skema Basis Data (DDL) & Database Seeder
+- **Migration DDL:** [2026-09-09-000001_CreateFoundationTables.php](file:///d:/vibe-coding/SIAP-PAGU/app/Database/Migrations/2026-09-09-000001_CreateFoundationTables.php)
+  - `tahun_anggaran`: Menyimpan status tahapan anggaran (Penyusunan, Murni, Pergeseran, Perubahan, Tutup Buku).
+  - `master_skpd`: Menyimpan data Perangkat Daerah, Pagu Murni, dan Pagu Pergeseran.
+  - `master_roles`: Menyimpan 5 tingkatan role RBAC.
+  - `users`: Menyimpan kredensial pengguna, hash password Bcrypt, NIP, Jabatan, dan SKPD binding.
+  - `audit_logs`: Tabel immutable untuk pencatatan jejak audit (IP address, User Agent, aksi DML).
+- **Seeder:** [FoundationSeeder.php](file:///d:/vibe-coding/SIAP-PAGU/app/Database/Seeds/FoundationSeeder.php)
+  - Mengisi 5 Role resmi: `superadmin`, `perencana`, `verifikator`, `pejabat_keuangan`, dan `pimpinan`.
+  - Mengisi SKPD sampel: BPKAD, Bappeda, Dinas Pendidikan, Dinas Kesehatan.
+  - Mengisi Tahun Anggaran Aktif 2026.
+  - Mengisi 5 Akun Demo bawaan.
+
+### 3. Middleware Keamanan & Dynamic RBAC
+- [AuthFilter.php](file:///d:/vibe-coding/SIAP-PAGU/app/Filters/AuthFilter.php): Memastikan user harus login terlebih dahulu sebelum mengakses halaman yang dilindungi.
+- [RbacFilter.php](file:///d:/vibe-coding/SIAP-PAGU/app/Filters/RbacFilter.php): Menerapkan permission matrix berbasis *Least Privilege*. Mengembalikan HTTP 403 Forbidden jika user mengakses route di luar hak aksesnya.
+- [Auth.php](file:///d:/vibe-coding/SIAP-PAGU/app/Controllers/Auth.php): Controller autentikasi yang dilengkapi dengan **Login Rate Limiting / Throttling** (maksimal 5 percobaan gagal) dan **Immutable Audit Logging**.
+
+### 4. Desain UI/UX & Navigasi Dinamis
+- [layouts/main.php](file:///d:/vibe-coding/SIAP-PAGU/app/Views/layouts/main.php): Layout aplikasi berbasis Tabler UI & Bootstrap 5.3 dengan sidebar navigasi dinamis yang menyesuaikan menu berdasarkan role user logged-in.
+- [auth/login.php](file:///d:/vibe-coding/SIAP-PAGU/app/Views/auth/login.php): Halaman login modern dengan kartu bantuan kredensial demo 5 role.
+- [dashboard/index.php](file:///d:/vibe-coding/SIAP-PAGU/app/Views/dashboard/index.php): Dashboard dengan kartu statistik pagu dan menu cepat sesuai role.
+- [users/index.php](file:///d:/vibe-coding/SIAP-PAGU/app/Views/users/index.php): Halaman manajemen akun user & toggle status aktif untuk Superadmin.
+- [errors/html/error_403.php](file:///d:/vibe-coding/SIAP-PAGU/app/Views/errors/html/error_403.php): Halaman 403 Access Denied.
+
+---
+
+## Kredensial Akun Demo (5 Role RBAC)
+
+| Role | Username | Password | Deskripsi Wewenang Menu |
+| :--- | :--- | :--- | :--- |
+| **Super Administrator** | `superadmin` | `admin123` | Akses Penuh (Dashboard, Users & RBAC, Master SKPD, System Config). |
+| **Perencana OPD** | `perencana` | `user123` | Penyusunan Belanja ASN, Usulan Pergeseran Pagu OPD. |
+| **Verifikator TAPD** | `verifikator` | `user123` | Pemeriksaan & Verifikasi Pergeseran, Kamus SBU & ASB. |
+| **PPKD / Keuangan** | `ppkd` | `user123` | Otorisasi & Pengesahan Pergeseran Pagu, SP2D. |
+| **Pimpinan Eksekutif** | `pimpinan` | `user123` | Read-only Monitoring Eksekutif & Laporan Pagu. |
+
+---
+
+## Hasil Pengujian & Verifikasi
+
+### 1. Migrasi & Seeding Database
+```bash
+CodeIgniter v4.7.4 Command Line Tool
+Running all new migrations...
+	Running: (App) 2026-09-09-000001_App\Database\Migrations\CreateFoundationTables
+Migrations complete.
+Seeded: App\Database\Seeds\FoundationSeeder
+```
+
+### 2. Pengujian Otomatis Auth & Restriksi RBAC (HTTP Requests)
+```
+=== 1. Fetching Login Page to get CSRF Token ===
+HTTP Status: 200 | CSRF Token generated.
+
+=== 2. Attempting Login as 'superadmin' ===
+HTTP Status: 303 Redirect to /dashboard
+
+=== 3. Accessing /dashboard as Superadmin ===
+HTTP Status: 200
+SUCCESS: Dashboard loaded successfully for Superadmin!
+
+=== 4. Accessing /users as Superadmin ===
+HTTP Status: 200
+SUCCESS: /users loaded successfully for Superadmin!
+
+=== 5. Logging out & Login as 'perencana' ===
+HTTP Status: 303 Redirect to /dashboard
+
+=== 6. Accessing /users as 'perencana' (RBAC Bypass Attempt) ===
+HTTP Status: 403
+SUCCESS: RbacFilter correctly blocked 'perencana' with 403 Forbidden Access Denied!
+```
+
+---
+
+## Cara Menjalankan Server Lokal
+Aplikasi saat ini aktif berjalan pada dev server lokal:
+```bash
+D:\xampp\php\php.exe -d extension=intl -d extension=zip -d extension=mysqli -S localhost:8080 -t public vendor/codeigniter4/framework/system/rewrite.php
+```
+Akses di browser melalui: `http://localhost:8080/login`
