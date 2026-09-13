@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Login - SIAP-PAGU</title>
+    <title>Login - SIAP-ANGGARAN</title>
     <!-- Google Fonts Inter -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -55,8 +55,8 @@
                         <div class="d-inline-flex align-items-center justify-content-center bg-primary-subtle text-primary rounded-circle p-3 mb-3 shadow-sm" style="width: 64px; height: 64px;">
                             <i class="bi bi-wallet2 fs-1"></i>
                         </div>
-                        <h3 class="fw-bold text-dark mb-1">SIAP-PAGU</h3>
-                        <p class="text-muted small">Sistem Informasi Akuntabilitas Perencanaan & Pagu Anggaran</p>
+                        <h3 class="fw-bold text-dark mb-1">SIAP-ANGGARAN</h3>
+                        <p class="text-muted small">Sistem Informasi Akuntabilitas Perencanaan & Anggaran</p>
                     </div>
 
                     <?php if (session()->getFlashdata('error')): ?>
@@ -113,7 +113,7 @@
                     <div class="d-flex align-items-center gap-2 mb-3 border-bottom border-secondary border-opacity-50 pb-2">
                         <i class="bi bi-shield-lock-fill text-warning fs-3"></i>
                         <div>
-                            <h5 class="fw-bold mb-0 text-white">Akun Demo RBAC 5 Role</h5>
+                            <h5 class="fw-bold mb-0 text-white">Akun Demo RBAC 7 Role</h5>
                             <small class="text-secondary">Klik tombol akun untuk mengisi form otomatis</small>
                         </div>
                     </div>
@@ -130,7 +130,7 @@
                             </thead>
                             <tbody>
                                 <tr>
-                                    <td><span class="badge bg-danger">Superadmin</span></td>
+                                    <td><span class="badge bg-danger">Super Administrator</span></td>
                                     <td><code>superadmin</code></td>
                                     <td><code>admin123</code></td>
                                     <td>
@@ -138,35 +138,51 @@
                                     </td>
                                 </tr>
                                 <tr>
+                                    <td><span class="badge bg-info text-dark" style="background-color: #06b6d4;">Admin</span></td>
+                                    <td><code>admin</code></td>
+                                    <td><code>user123</code></td>
+                                    <td>
+                                        <button type="button" class="btn btn-xs btn-outline-info py-0 px-2 fs-7" onclick="fillLogin('admin', 'user123')">Pilih</button>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td><span class="badge bg-success">Kepala BPKD/PPKD</span></td>
+                                    <td><code>kepalabpkd</code></td>
+                                    <td><code>user123</code></td>
+                                    <td>
+                                        <button type="button" class="btn btn-xs btn-outline-info py-0 px-2 fs-7" onclick="fillLogin('kepalabpkd', 'user123')">Pilih</button>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td><span class="badge bg-warning text-dark">Verifikator BPKD</span></td>
+                                    <td><code>verifikatorbpkd</code></td>
+                                    <td><code>user123</code></td>
+                                    <td>
+                                        <button type="button" class="btn btn-xs btn-outline-info py-0 px-2 fs-7" onclick="fillLogin('verifikatorbpkd', 'user123')">Pilih</button>
+                                    </td>
+                                </tr>
+                                <tr>
                                     <td><span class="badge bg-primary">Perencana OPD</span></td>
-                                    <td><code>perencana</code></td>
+                                    <td><code>perencanaopd</code></td>
                                     <td><code>user123</code></td>
                                     <td>
-                                        <button type="button" class="btn btn-xs btn-outline-info py-0 px-2 fs-7" onclick="fillLogin('perencana', 'user123')">Pilih</button>
+                                        <button type="button" class="btn btn-xs btn-outline-info py-0 px-2 fs-7" onclick="fillLogin('perencanaopd', 'user123')">Pilih</button>
                                     </td>
                                 </tr>
                                 <tr>
-                                    <td><span class="badge bg-warning text-dark">Verifikator TAPD</span></td>
-                                    <td><code>verifikator</code></td>
-                                    <td><code>user123</code></td>
-                                    <td>
-                                        <button type="button" class="btn btn-xs btn-outline-info py-0 px-2 fs-7" onclick="fillLogin('verifikator', 'user123')">Pilih</button>
-                                    </td>
-                                </tr>
-                                <tr>
-                                    <td><span class="badge bg-success">PPKD / Keuangan</span></td>
-                                    <td><code>ppkd</code></td>
-                                    <td><code>user123</code></td>
-                                    <td>
-                                        <button type="button" class="btn btn-xs btn-outline-info py-0 px-2 fs-7" onclick="fillLogin('ppkd', 'user123')">Pilih</button>
-                                    </td>
-                                </tr>
-                                <tr>
-                                    <td><span class="badge bg-purple" style="background-color: #8b5cf6;">Pimpinan Eksekutif</span></td>
+                                    <td><span class="badge" style="background-color: #8b5cf6; color: #fff;">Pimpinan/Eksekutif</span></td>
                                     <td><code>pimpinan</code></td>
                                     <td><code>user123</code></td>
                                     <td>
                                         <button type="button" class="btn btn-xs btn-outline-info py-0 px-2 fs-7" onclick="fillLogin('pimpinan', 'user123')">Pilih</button>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td><span class="badge" style="background-color: #0284c7; color: #fff;">Operator BPKD</span></td>
+                                    <td><code>operatorbpkd</code></td>
+                                    <td><code>user123</code></td>
+                                    <td>
+                                        <button type="button" class="btn btn-xs btn-outline-info py-0 px-2 fs-7" onclick="fillLogin('operatorbpkd', 'user123')">Pilih</button>
                                     </td>
                                 </tr>
                             </tbody>

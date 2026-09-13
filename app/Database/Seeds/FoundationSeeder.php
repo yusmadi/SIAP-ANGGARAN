@@ -8,37 +8,49 @@ class FoundationSeeder extends Seeder
 {
     public function run()
     {
-        // 1. Seed Master Roles
+        // 1. Seed Master Roles (6 Role Resmi)
         $roles = [
             [
                 'id'          => 1,
                 'role_code'   => 'superadmin',
                 'role_name'   => 'Super Administrator',
-                'description' => 'Pengelola penuh infrastruktur & pengguna sistem',
+                'description' => 'Pengelola penuh infrastruktur, konfigurasi & pengguna sistem',
             ],
             [
                 'id'          => 2,
-                'role_code'   => 'perencana',
-                'role_name'   => 'Perencana SKPD',
-                'description' => 'Penyusun RKA dan pengusul pergeseran pagu SKPD',
+                'role_code'   => 'admin_bpkd',
+                'role_name'   => 'Admin',
+                'description' => 'Administrator operasional teknis BPKD (kelola pengguna, master SKPK, SBU/ASB)',
             ],
             [
                 'id'          => 3,
-                'role_code'   => 'verifikator',
-                'role_name'   => 'Verifikator TAPD / BPKAD',
-                'description' => 'Pemeriksa administratif dan regulasi pergeseran pagu',
+                'role_code'   => 'kepala_bpkd',
+                'role_name'   => 'Kepala BPKD/PPKD',
+                'description' => 'Otorisator pengesahan dokumen pergeseran & pengeluaran anggaran BPKD/PPKD',
             ],
             [
                 'id'          => 4,
-                'role_code'   => 'pejabat_keuangan',
-                'role_name'   => 'PPKD / Kepala BPKAD',
-                'description' => 'Otorisator pengesahan dokumen pergeseran dan pengeluaran',
+                'role_code'   => 'verifikator_bpkd',
+                'role_name'   => 'Verifikator BPKD',
+                'description' => 'Pemeriksa administratif, regulasi, dan penelaah usulan pergeseran anggaran',
             ],
             [
                 'id'          => 5,
-                'role_code'   => 'pimpinan',
-                'role_name'   => 'Pimpinan Daerah / Eksekutif',
-                'description' => 'Akses pemantauan eksekutif ringkasan serapan pagu',
+                'role_code'   => 'perencana_opd',
+                'role_name'   => 'Perencana/Kepegawaian/Program OPD',
+                'description' => 'Penyusun RKA, proyeksi belanja pegawai/ASN, dan pengusul pergeseran pagu OPD',
+            ],
+            [
+                'id'          => 6,
+                'role_code'   => 'pimpinan_eksekutif',
+                'role_name'   => 'Pimpinan/Eksekutif',
+                'description' => 'Akses pemantauan & analisis eksekutif ringkasan serapan anggaran',
+            ],
+            [
+                'id'          => 7,
+                'role_code'   => 'operator_bpkd',
+                'role_name'   => 'Operator BPKD',
+                'description' => 'Operator teknis entri data pergeseran pagu, pencatatan SP2D, & realisasi anggaran BPKD',
             ],
         ];
 
@@ -46,12 +58,12 @@ class FoundationSeeder extends Seeder
             $this->db->table('master_roles')->upsert($role);
         }
 
-        // 2. Seed Master SKPD
+        // 2. Seed Master SKPK
         $skpds = [
             [
                 'id'                    => 1,
                 'kode_skpd'             => '5.02.0.00.0.00.01.0000',
-                'nama_skpd'             => 'Badan Pengelola Keuangan dan Aset Daerah (BPKAD)',
+                'nama_skpd'             => 'Badan Pengelola Keuangan dan Aset Daerah (BPKD)',
                 'nama_kepala'           => 'Dr. H. Ahmad Fauzi, SE, M.Si',
                 'nip_kepala'            => '19750812 199803 1 002',
                 'pagu_total_murni'      => 125000000000.00,
@@ -109,19 +121,19 @@ class FoundationSeeder extends Seeder
         ];
         $this->db->table('tahun_anggaran')->upsert($tahun);
 
-        // 4. Seed Demo Users
+        // 4. Seed Demo Users (6 Role Akun)
         $defaultPasswordHash = password_hash('user123', PASSWORD_BCRYPT);
         $adminPasswordHash   = password_hash('admin123', PASSWORD_BCRYPT);
 
         $users = [
             [
                 'id'            => 1,
-                'role_id'       => 1, // Superadmin
-                'skpd_id'       => 1, // BPKAD
+                'role_id'       => 1, // Super Administrator
+                'skpd_id'       => 1, // BPKD
                 'username'      => 'superadmin',
-                'email'         => 'admin@siap-pagu.go.id',
+                'email'         => 'admin@siap-anggaran.go.id',
                 'password_hash' => $adminPasswordHash,
-                'nama_lengkap'  => 'Administrator Utama SIAP-PAGU',
+                'nama_lengkap'  => 'Administrator Utama SIAP-ANGGARAN',
                 'nip'           => '19850101 201001 1 001',
                 'jabatan'       => 'System Administrator',
                 'phone_number'  => '081234567890',
@@ -131,60 +143,90 @@ class FoundationSeeder extends Seeder
             ],
             [
                 'id'            => 2,
-                'role_id'       => 2, // Perencana
-                'skpd_id'       => 1, // BPKAD
-                'username'      => 'perencana',
-                'email'         => 'perencana@bpkad.go.id',
+                'role_id'       => 2, // Admin
+                'skpd_id'       => 1, // BPKD
+                'username'      => 'admin',
+                'email'         => 'admin.bpkd@pemda.go.id',
                 'password_hash' => $defaultPasswordHash,
-                'nama_lengkap'  => 'Rina Wulandari, S.E.',
-                'nip'           => '19890314 201402 2 003',
-                'jabatan'       => 'Kasubag Program & Keuangan BPKAD',
-                'phone_number'  => '081298765432',
+                'nama_lengkap'  => 'Rahmat Hidayat, S.Kom',
+                'nip'           => '19870512 201101 1 003',
+                'jabatan'       => 'Administrator Operasional BPKD',
+                'phone_number'  => '081234567891',
                 'is_active'     => 1,
                 'created_at'    => date('Y-m-d H:i:s'),
                 'updated_at'    => date('Y-m-d H:i:s'),
             ],
             [
                 'id'            => 3,
-                'role_id'       => 3, // Verifikator
-                'skpd_id'       => 2, // BAPPEDA
-                'username'      => 'verifikator',
-                'email'         => 'verifikator@tapd.go.id',
-                'password_hash' => $defaultPasswordHash,
-                'nama_lengkap'  => 'Ir. Budi Santoso, M.Si',
-                'nip'           => '19810625 200604 1 002',
-                'jabatan'       => 'Tim Verifikator TAPD Bappeda',
-                'phone_number'  => '081377889900',
-                'is_active'     => 1,
-                'created_at'    => date('Y-m-d H:i:s'),
-                'updated_at'    => date('Y-m-d H:i:s'),
-            ],
-            [
-                'id'            => 4,
-                'role_id'       => 4, // PPKD / Pejabat Keuangan
-                'skpd_id'       => 1, // BPKAD
-                'username'      => 'ppkd',
-                'email'         => 'ppkd@bpkad.go.id',
+                'role_id'       => 3, // Kepala BPKD/PPKD
+                'skpd_id'       => 1, // BPKD
+                'username'      => 'kepalabpkd',
+                'email'         => 'kepala.bpkd@pemda.go.id',
                 'password_hash' => $defaultPasswordHash,
                 'nama_lengkap'  => 'Dr. H. Ahmad Fauzi, SE, M.Si',
                 'nip'           => '19750812 199803 1 002',
-                'jabatan'       => 'Kepala BPKAD / PPKD',
+                'jabatan'       => 'Kepala BPKD / PPKD',
                 'phone_number'  => '081122334455',
                 'is_active'     => 1,
                 'created_at'    => date('Y-m-d H:i:s'),
                 'updated_at'    => date('Y-m-d H:i:s'),
             ],
             [
+                'id'            => 4,
+                'role_id'       => 4, // Verifikator BPKD
+                'skpd_id'       => 1, // BPKD
+                'username'      => 'verifikatorbpkd',
+                'email'         => 'verifikator.bpkd@pemda.go.id',
+                'password_hash' => $defaultPasswordHash,
+                'nama_lengkap'  => 'Ir. Budi Santoso, M.Si',
+                'nip'           => '19810625 200604 1 002',
+                'jabatan'       => 'Tim Verifikator BPKD',
+                'phone_number'  => '081377889900',
+                'is_active'     => 1,
+                'created_at'    => date('Y-m-d H:i:s'),
+                'updated_at'    => date('Y-m-d H:i:s'),
+            ],
+            [
                 'id'            => 5,
-                'role_id'       => 5, // Pimpinan Eksekutif
+                'role_id'       => 5, // Perencana/Kepegawaian/Program OPD
+                'skpd_id'       => 3, // Dinas Pendidikan
+                'username'      => 'perencanaopd',
+                'email'         => 'perencana.opd@pemda.go.id',
+                'password_hash' => $defaultPasswordHash,
+                'nama_lengkap'  => 'Rina Wulandari, S.E.',
+                'nip'           => '19890314 201402 2 003',
+                'jabatan'       => 'Kasubag Program & Keuangan OPD',
+                'phone_number'  => '081298765432',
+                'is_active'     => 1,
+                'created_at'    => date('Y-m-d H:i:s'),
+                'updated_at'    => date('Y-m-d H:i:s'),
+            ],
+            [
+                'id'            => 6,
+                'role_id'       => 6, // Pimpinan/Eksekutif
                 'skpd_id'       => null,
                 'username'      => 'pimpinan',
-                'email'         => 'sekda@pemda.go.id',
+                'email'         => 'pimpinan@pemda.go.id',
                 'password_hash' => $defaultPasswordHash,
                 'nama_lengkap'  => 'Drs. H. Syarifuddin, M.Si',
                 'nip'           => '19680918 199303 1 005',
                 'jabatan'       => 'Sekretaris Daerah (Sekda)',
                 'phone_number'  => '081199001122',
+                'is_active'     => 1,
+                'created_at'    => date('Y-m-d H:i:s'),
+                'updated_at'    => date('Y-m-d H:i:s'),
+            ],
+            [
+                'id'            => 7,
+                'role_id'       => 7, // Operator BPKD
+                'skpd_id'       => 1, // BPKD
+                'username'      => 'operatorbpkd',
+                'email'         => 'operator.bpkd@pemda.go.id',
+                'password_hash' => $defaultPasswordHash,
+                'nama_lengkap'  => 'Agus Prasetyo, A.Md',
+                'nip'           => '19920817 201801 1 004',
+                'jabatan'       => 'Operator Pengolah Data BPKD',
+                'phone_number'  => '081244556677',
                 'is_active'     => 1,
                 'created_at'    => date('Y-m-d H:i:s'),
                 'updated_at'    => date('Y-m-d H:i:s'),

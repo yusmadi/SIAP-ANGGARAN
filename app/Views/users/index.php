@@ -22,7 +22,7 @@
                         <th>Pengguna & NIP</th>
                         <th>Username & Email</th>
                         <th>Role RBAC</th>
-                        <th>SKPD / OPD</th>
+                        <th>SKPK / OPD</th>
                         <th>Status</th>
                         <th>Terakhir Login</th>
                         <th class="text-end pe-4">Aksi</th>
@@ -100,7 +100,7 @@
                         </div>
                         <div class="col-md-6">
                             <label class="form-label fw-semibold">Email <span class="text-danger">*</span></label>
-                            <input type="email" name="email" class="form-control" placeholder="user@skpd.go.id" required>
+                            <input type="email" name="email" class="form-control" placeholder="user@skpk.go.id" required>
                         </div>
                         <div class="col-md-6">
                             <label class="form-label fw-semibold">Password <span class="text-danger">*</span></label>
@@ -128,9 +128,9 @@
                             </select>
                         </div>
                         <div class="col-md-6">
-                            <label class="form-label fw-semibold">SKPD / OPD</label>
+                            <label class="form-label fw-semibold">SKPK / OPD</label>
                             <select name="skpd_id" class="form-select">
-                                <option value="">-- Tidak Terikat SKPD (Pimpinan/Admin) --</option>
+                                <option value="">-- Tidak Terikat SKPK (Pimpinan/Admin) --</option>
                                 <?php foreach ($skpds as $s): ?>
                                     <option value="<?= $s['id'] ?>"><?= esc($s['nama_skpd']) ?></option>
                                 <?php endforeach; ?>

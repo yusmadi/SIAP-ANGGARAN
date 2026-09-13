@@ -16,11 +16,11 @@ Selesai mengerjakan **Tahap 1: Fondasi & Autentikasi RBAC** untuk aplikasi **SIA
   - `tahun_anggaran`: Menyimpan status tahapan anggaran (Penyusunan, Murni, Pergeseran, Perubahan, Tutup Buku).
   - `master_skpd`: Menyimpan data Perangkat Daerah, Pagu Murni, dan Pagu Pergeseran.
   - `master_roles`: Menyimpan 5 tingkatan role RBAC.
-  - `users`: Menyimpan kredensial pengguna, hash password Bcrypt, NIP, Jabatan, dan SKPD binding.
+  - `users`: Menyimpan kredensial pengguna, hash password Bcrypt, NIP, Jabatan, dan SKPK binding.
   - `audit_logs`: Tabel immutable untuk pencatatan jejak audit (IP address, User Agent, aksi DML).
 - **Seeder:** [FoundationSeeder.php](file:///d:/vibe-coding/SIAP-PAGU/app/Database/Seeds/FoundationSeeder.php)
   - Mengisi 5 Role resmi: `superadmin`, `perencana`, `verifikator`, `pejabat_keuangan`, dan `pimpinan`.
-  - Mengisi SKPD sampel: BPKAD, Bappeda, Dinas Pendidikan, Dinas Kesehatan.
+  - Mengisi SKPK sampel: BPKAD, Bappeda, Dinas Pendidikan, Dinas Kesehatan.
   - Mengisi Tahun Anggaran Aktif 2026.
   - Mengisi 5 Akun Demo bawaan.
 
@@ -42,7 +42,7 @@ Selesai mengerjakan **Tahap 1: Fondasi & Autentikasi RBAC** untuk aplikasi **SIA
 
 | Role | Username | Password | Deskripsi Wewenang Menu |
 | :--- | :--- | :--- | :--- |
-| **Super Administrator** | `superadmin` | `admin123` | Akses Penuh (Dashboard, Users & RBAC, Master SKPD, System Config). |
+| **Super Administrator** | `superadmin` | `admin123` | Akses Penuh (Dashboard, Users & RBAC, Master SKPK, System Config). |
 | **Perencana OPD** | `perencana` | `user123` | Penyusunan Belanja ASN, Usulan Pergeseran Pagu OPD. |
 | **Verifikator TAPD** | `verifikator` | `user123` | Pemeriksaan & Verifikasi Pergeseran, Kamus SBU & ASB. |
 | **PPKD / Keuangan** | `ppkd` | `user123` | Otorisasi & Pengesahan Pergeseran Pagu, SP2D. |

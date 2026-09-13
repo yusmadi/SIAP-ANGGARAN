@@ -9,20 +9,36 @@ use CodeIgniter\HTTP\ResponseInterface;
 class RbacFilter implements FilterInterface
 {
     /**
-     * Permission Matrix per Role Code
+     * Permission Matrix per Role Code (6 Role Resmi)
      */
     protected array $rolePermissions = [
-        'superadmin' => ['*'], // Akses penuh
-        'perencana'  => [
+        'superadmin'  => ['*'], // Akses penuh
+        'admin_bpkd'  => [
             'dashboard',
-            'pergeseran',
-            'pergeseran/usulan',
-            'pergeseran/simpan-usulan',
-            'rka',
-            'asn',
+            'users',
+            'users/store',
+            'users/toggle',
+            'skpd',
+            'akun',
+            'kelompok',
+            'jenis',
+            'objek',
+            'rincian-objek',
+            'sub-rincian-objek',
+            'sbu',
+            'asb',
             'pagu',
         ],
-        'verifikator' => [
+        'kepala_bpkd' => [
+            'dashboard',
+            'otorisasi',
+            'pergeseran',
+            'pergeseran/otorisasi-action',
+            'sp2d',
+            'pagu',
+            'laporan',
+        ],
+        'verifikator_bpkd' => [
             'dashboard',
             'verifikasi',
             'pergeseran',
@@ -31,19 +47,35 @@ class RbacFilter implements FilterInterface
             'asb',
             'pagu',
         ],
-        'pejabat_keuangan' => [
+        'perencana_opd' => [
             'dashboard',
-            'otorisasi',
+            'akun',
+            'kelompok',
+            'jenis',
+            'objek',
+            'rincian-objek',
+            'sub-rincian-objek',
             'pergeseran',
-            'pergeseran/otorisasi-action',
-            'sp2d',
+            'pergeseran/usulan',
+            'pergeseran/simpan-usulan',
+            'rka',
+            'asn',
             'pagu',
         ],
-        'pimpinan' => [
+        'pimpinan_eksekutif' => [
             'dashboard',
             'monitoring',
             'laporan',
             'pagu',
+        ],
+        'operator_bpkd' => [
+            'dashboard',
+            'pergeseran',
+            'pergeseran/entri',
+            'sp2d',
+            'pagu',
+            'sbu',
+            'asb',
         ],
     ];
 

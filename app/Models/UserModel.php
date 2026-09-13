@@ -33,7 +33,7 @@ class UserModel extends Model
     protected $updatedField  = 'updated_at';
 
     /**
-     * Cari pengguna beserta informasi role dan SKPD
+     * Cari pengguna beserta informasi role dan SKPK
      */
     public function getUserWithRelations(string $loginInput)
     {
@@ -58,7 +58,7 @@ class UserModel extends Model
     }
 
     /**
-     * Dapatkan daftar user lengkap dengan detail role & SKPD
+     * Dapatkan daftar user lengkap dengan detail role & SKPK
      */
     public function getAllUsersWithDetails()
     {

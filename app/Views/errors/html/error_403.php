@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>403 - Akses Ditolak | SIAP-PAGU</title>
+    <title>403 - Akses Ditolak | SIAP-ANGGARAN</title>
     <!-- Google Fonts Inter -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -47,7 +47,7 @@
                 <strong class="fs-6">Prinsip Least Privilege RBAC:</strong>
             </div>
             <small class="d-block">
-                Sistem SIAP-PAGU membatasi setiap fungsi hanya untuk role pengguna yang berwenang. Akun Anda terdaftar sebagai <strong><?= esc($role_name ?? 'User') ?></strong>.
+                Sistem SIAP-ANGGARAN membatasi setiap fungsi hanya untuk role pengguna yang berwenang. Akun Anda terdaftar sebagai <strong><?= esc($role_name ?? 'User') ?></strong>.
             </small>
         </div>
 
