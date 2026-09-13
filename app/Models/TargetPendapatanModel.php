@@ -19,6 +19,7 @@ class TargetPendapatanModel extends Model
         'target_murni',
         'target_pergeseran',
         'target_perubahan',
+        'target_pergeseran_setelah_perubahan',
         'keterangan',
     ];
 
@@ -91,14 +92,16 @@ class TargetPendapatanModel extends Model
         $sumQuery = (clone $builder)->selectSum('target_murni', 'sum_murni')
                                    ->selectSum('target_pergeseran', 'sum_pergeseran')
                                    ->selectSum('target_perubahan', 'sum_perubahan')
+                                   ->selectSum('target_pergeseran_setelah_perubahan', 'sum_pergeseran_setelah_perubahan')
                                    ->get()
                                    ->getRowArray();
 
         return [
-            'total_items'            => $totalItems,
-            'total_target_murni'     => (float) ($sumQuery['sum_murni'] ?? 0),
-            'total_target_pergeseran' => (float) ($sumQuery['sum_pergeseran'] ?? 0),
-            'total_target_perubahan'  => (float) ($sumQuery['sum_perubahan'] ?? 0),
+            'total_items'                          => $totalItems,
+            'total_target_murni'                   => (float) ($sumQuery['sum_murni'] ?? 0),
+            'total_target_pergeseran'              => (float) ($sumQuery['sum_pergeseran'] ?? 0),
+            'total_target_perubahan'               => (float) ($sumQuery['sum_perubahan'] ?? 0),
+            'total_target_pergeseran_setelah_perubahan' => (float) ($sumQuery['sum_pergeseran_setelah_perubahan'] ?? 0),
         ];
     }
 

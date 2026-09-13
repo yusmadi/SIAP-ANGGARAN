@@ -8,12 +8,17 @@
             <div class="card-body p-4 p-md-5">
                 <div class="row align-items-center">
                     <div class="col-lg-8">
-                        <div class="d-flex align-items-center gap-2 mb-2">
-                            <span class="badge bg-white bg-opacity-20 text-white px-3 py-1.5 fs-6 rounded-pill">
-                                <i class="bi bi-building me-1"></i> Master Data Integrasi
+                        <div class="d-flex align-items-center gap-2 mb-3 flex-wrap">
+                            <?php 
+                            $roleCode = session()->get('role_code');
+                            $roleName = session()->get('role_name') ?? ucfirst($roleCode ?? 'User');
+                            $userSkpdName = session()->get('nama_skpd') ?? 'Pemerintah Daerah';
+                            ?>
+                            <span class="badge badge-role-<?= esc($roleCode ?? 'user') ?> px-3 py-2 fs-6 rounded-pill shadow-sm">
+                                <i class="bi bi-shield-check me-1"></i> Role: <?= esc($roleName) ?>
                             </span>
-                            <span class="badge bg-warning text-dark px-3 py-1.5 fs-6 rounded-pill fw-bold">
-                                Modul SKPK
+                            <span class="badge badge-skpk-header px-3 py-2 fs-6 rounded-pill shadow-sm">
+                                <i class="bi bi-building me-1 text-info"></i> SKPK: <?= esc($userSkpdName) ?>
                             </span>
                         </div>
                         <h2 class="fw-bold mb-1 text-white">Manajemen Master Data SKPK</h2>

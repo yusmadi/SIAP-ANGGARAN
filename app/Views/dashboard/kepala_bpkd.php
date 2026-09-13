@@ -8,12 +8,12 @@
             <div class="card-body p-4 p-md-5">
                 <div class="row align-items-center">
                     <div class="col-lg-8">
-                        <div class="d-flex align-items-center gap-2 mb-2">
-                            <span class="badge bg-success px-3 py-1.5 fs-6 rounded-pill fw-bold">
-                                <i class="bi bi-award-fill me-1"></i> Otorisator Pengesahan PPKD
+                        <div class="d-flex align-items-center gap-2 mb-3 flex-wrap">
+                            <span class="badge badge-role-<?= esc($user['role_code']) ?> px-3 py-2 fs-6 rounded-pill shadow-sm">
+                                <i class="bi bi-award-fill me-1"></i> Role: <?= esc($user['role_name'] ?? 'Kepala BPKD') ?>
                             </span>
-                            <span class="badge bg-white bg-opacity-20 text-white px-3 py-1.5 fs-6 rounded-pill">
-                                Pejabat Pengelola Keuangan Daerah
+                            <span class="badge badge-skpk-header px-3 py-2 fs-6 rounded-pill shadow-sm">
+                                <i class="bi bi-building me-1 text-info"></i> SKPK: <?= esc($user['nama_skpd'] ?? 'Badan Pengelola Keuangan Daerah (BPKD)') ?>
                             </span>
                         </div>
                         <h2 class="fw-bold mb-1 text-white">Portal Kepala BPKD / PPKD</h2>

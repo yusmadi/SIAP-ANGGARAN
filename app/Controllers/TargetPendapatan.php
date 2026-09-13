@@ -68,35 +68,56 @@ class TargetPendapatan extends BaseController
         return view('target_pendapatan/index', $data);
     }
 
+    private function parseCurrency($value): ?float
+    {
+        if ($value === null || $value === '') {
+            return null;
+        }
+        $clean = str_replace('.', '', (string) $value);
+        $clean = str_replace(',', '.', $clean);
+        return is_numeric($clean) ? (float) $clean : null;
+    }
+
     public function store()
     {
+        // Sanitize numeric input values from thousands separator dots
+        $postData = $this->request->getPost();
+        foreach (['target_murni', 'target_pergeseran', 'target_perubahan', 'target_pergeseran_setelah_perubahan'] as $field) {
+            if (isset($postData[$field]) && $postData[$field] !== '') {
+                $postData[$field] = $this->parseCurrency($postData[$field]);
+            }
+        }
+
         $rules = [
-            'skpd_id'              => 'required|numeric|is_not_unique[master_skpd.id]',
-            'sub_rincian_objek_id' => 'required|numeric|is_not_unique[master_sub_rincian_objek.id]',
-            'target_murni'         => 'required|numeric|greater_than_equal_to[0]',
-            'target_pergeseran'    => 'permit_empty|numeric|greater_than_equal_to[0]',
-            'target_perubahan'     => 'permit_empty|numeric|greater_than_equal_to[0]',
+            'skpd_id'                             => 'required|numeric|is_not_unique[master_skpd.id]',
+            'sub_rincian_objek_id'                => 'required|numeric|is_not_unique[master_sub_rincian_objek.id]',
+            'target_murni'                        => 'required|numeric|greater_than_equal_to[0]',
+            'target_pergeseran'                   => 'permit_empty|numeric|greater_than_equal_to[0]',
+            'target_perubahan'                    => 'permit_empty|numeric|greater_than_equal_to[0]',
+            'target_pergeseran_setelah_perubahan' => 'permit_empty|numeric|greater_than_equal_to[0]',
         ];
 
-        if (!$this->validate($rules)) {
+        if (!$this->validateData($postData, $rules)) {
             return redirect()->back()->withInput()->with('error', 'Gagal menyimpan Target Pendapatan. Silakan periksa kembali inputan Anda.');
         }
 
         $activeYear = $this->tahunModel->getActiveYear();
         $tahunId = $activeYear ? $activeYear['id'] : null;
 
-        $targetMurni = (float) $this->request->getPost('target_murni');
-        $targetPergeseran = $this->request->getPost('target_pergeseran') !== null && $this->request->getPost('target_pergeseran') !== '' ? (float) $this->request->getPost('target_pergeseran') : $targetMurni;
-        $targetPerubahan = $this->request->getPost('target_perubahan') !== null && $this->request->getPost('target_perubahan') !== '' ? (float) $this->request->getPost('target_perubahan') : $targetPergeseran;
+        $targetMurni = (float) $postData['target_murni'];
+        $targetPergeseran = ($postData['target_pergeseran'] !== null && $postData['target_pergeseran'] !== '') ? (float) $postData['target_pergeseran'] : $targetMurni;
+        $targetPerubahan = ($postData['target_perubahan'] !== null && $postData['target_perubahan'] !== '') ? (float) $postData['target_perubahan'] : $targetPergeseran;
+        $targetPergeseranSetelahPerubahan = ($postData['target_pergeseran_setelah_perubahan'] !== null && $postData['target_pergeseran_setelah_perubahan'] !== '') ? (float) $postData['target_pergeseran_setelah_perubahan'] : $targetPerubahan;
 
         $data = [
-            'tahun_anggaran_id'    => $tahunId,
-            'skpd_id'              => (int) $this->request->getPost('skpd_id'),
-            'sub_rincian_objek_id' => (int) $this->request->getPost('sub_rincian_objek_id'),
-            'target_murni'         => $targetMurni,
-            'target_pergeseran'    => $targetPergeseran,
-            'target_perubahan'     => $targetPerubahan,
-            'keterangan'           => trim((string) $this->request->getPost('keterangan')),
+            'tahun_anggaran_id'                   => $tahunId,
+            'skpd_id'                             => (int) $postData['skpd_id'],
+            'sub_rincian_objek_id'                => (int) $postData['sub_rincian_objek_id'],
+            'target_murni'                        => $targetMurni,
+            'target_pergeseran'                   => $targetPergeseran,
+            'target_perubahan'                    => $targetPerubahan,
+            'target_pergeseran_setelah_perubahan' => $targetPergeseranSetelahPerubahan,
+            'keterangan'                          => trim((string) ($postData['keterangan'] ?? '')),
         ];
 
         $this->targetModel->insert($data);
@@ -120,29 +141,39 @@ class TargetPendapatan extends BaseController
             return redirect()->to('/target-pendapatan')->with('error', 'Data Target Pendapatan tidak ditemukan.');
         }
 
+        $postData = $this->request->getPost();
+        foreach (['target_murni', 'target_pergeseran', 'target_perubahan', 'target_pergeseran_setelah_perubahan'] as $field) {
+            if (isset($postData[$field]) && $postData[$field] !== '') {
+                $postData[$field] = $this->parseCurrency($postData[$field]);
+            }
+        }
+
         $rules = [
-            'skpd_id'              => 'required|numeric|is_not_unique[master_skpd.id]',
-            'sub_rincian_objek_id' => 'required|numeric|is_not_unique[master_sub_rincian_objek.id]',
-            'target_murni'         => 'required|numeric|greater_than_equal_to[0]',
-            'target_pergeseran'    => 'permit_empty|numeric|greater_than_equal_to[0]',
-            'target_perubahan'     => 'permit_empty|numeric|greater_than_equal_to[0]',
+            'skpd_id'                             => 'required|numeric|is_not_unique[master_skpd.id]',
+            'sub_rincian_objek_id'                => 'required|numeric|is_not_unique[master_sub_rincian_objek.id]',
+            'target_murni'                        => 'required|numeric|greater_than_equal_to[0]',
+            'target_pergeseran'                   => 'permit_empty|numeric|greater_than_equal_to[0]',
+            'target_perubahan'                    => 'permit_empty|numeric|greater_than_equal_to[0]',
+            'target_pergeseran_setelah_perubahan' => 'permit_empty|numeric|greater_than_equal_to[0]',
         ];
 
-        if (!$this->validate($rules)) {
+        if (!$this->validateData($postData, $rules)) {
             return redirect()->back()->withInput()->with('error', 'Gagal memperbarui Target Pendapatan.');
         }
 
-        $targetMurni = (float) $this->request->getPost('target_murni');
-        $targetPergeseran = $this->request->getPost('target_pergeseran') !== null && $this->request->getPost('target_pergeseran') !== '' ? (float) $this->request->getPost('target_pergeseran') : $targetMurni;
-        $targetPerubahan = $this->request->getPost('target_perubahan') !== null && $this->request->getPost('target_perubahan') !== '' ? (float) $this->request->getPost('target_perubahan') : $targetPergeseran;
+        $targetMurni = (float) $postData['target_murni'];
+        $targetPergeseran = ($postData['target_pergeseran'] !== null && $postData['target_pergeseran'] !== '') ? (float) $postData['target_pergeseran'] : $targetMurni;
+        $targetPerubahan = ($postData['target_perubahan'] !== null && $postData['target_perubahan'] !== '') ? (float) $postData['target_perubahan'] : $targetPergeseran;
+        $targetPergeseranSetelahPerubahan = ($postData['target_pergeseran_setelah_perubahan'] !== null && $postData['target_pergeseran_setelah_perubahan'] !== '') ? (float) $postData['target_pergeseran_setelah_perubahan'] : $targetPerubahan;
 
         $updateData = [
-            'skpd_id'              => (int) $this->request->getPost('skpd_id'),
-            'sub_rincian_objek_id' => (int) $this->request->getPost('sub_rincian_objek_id'),
-            'target_murni'         => $targetMurni,
-            'target_pergeseran'    => $targetPergeseran,
-            'target_perubahan'     => $targetPerubahan,
-            'keterangan'           => trim((string) $this->request->getPost('keterangan')),
+            'skpd_id'                             => (int) $postData['skpd_id'],
+            'sub_rincian_objek_id'                => (int) $postData['sub_rincian_objek_id'],
+            'target_murni'                        => $targetMurni,
+            'target_pergeseran'                   => $targetPergeseran,
+            'target_perubahan'                    => $targetPerubahan,
+            'target_pergeseran_setelah_perubahan' => $targetPergeseranSetelahPerubahan,
+            'keterangan'                          => trim((string) ($postData['keterangan'] ?? '')),
         ];
 
         $this->targetModel->update($id, $updateData);

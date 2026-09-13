@@ -8,12 +8,12 @@
             <div class="card-body p-4 p-md-5">
                 <div class="row align-items-center">
                     <div class="col-lg-8">
-                        <div class="d-flex align-items-center gap-2 mb-2">
-                            <span class="badge badge-role-<?= esc($user['role_code']) ?> px-3 py-1.5 fs-6 rounded-pill">
-                                <i class="bi bi-shield-check me-1"></i> <?= esc($user['role_name']) ?>
+                        <div class="d-flex align-items-center gap-2 mb-3 flex-wrap">
+                            <span class="badge badge-role-<?= esc($user['role_code']) ?> px-3 py-2 fs-6 rounded-pill shadow-sm">
+                                <i class="bi bi-shield-check me-1"></i> Role: <?= esc($user['role_name']) ?>
                             </span>
-                            <span class="badge bg-primary-subtle text-primary px-3 py-1.5 fs-6 rounded-pill">
-                                <i class="bi bi-building me-1"></i> <?= esc($user['nama_skpd']) ?>
+                            <span class="badge badge-skpk-header px-3 py-2 fs-6 rounded-pill shadow-sm">
+                                <i class="bi bi-building me-1 text-info"></i> SKPK: <?= esc($user['nama_skpd'] ?? 'Pemerintah Daerah') ?>
                             </span>
                         </div>
                         <h2 class="fw-bold mb-1 text-white">Selamat Datang, <?= esc($user['name']) ?>!</h2>
@@ -102,7 +102,7 @@
         <div class="card border-0 shadow-sm rounded-3">
             <div class="card-header bg-transparent border-0 pt-4 px-4 pb-0 d-flex justify-content-between align-items-center">
                 <h5 class="fw-bold mb-0 text-dark"><i class="bi bi-grid-fill me-2 text-primary"></i> Modul Utama Berdasarkan Hak Akses Role</h5>
-                <span class="badge bg-light text-secondary border">Role: <?= esc($user['role_name']) ?></span>
+                <span class="badge badge-role-<?= esc($user['role_code']) ?> px-3 py-1.5 fs-6 shadow-sm">Role: <?= esc($user['role_name']) ?></span>
             </div>
             <div class="card-body p-4">
                 <div class="row g-3">

@@ -11,9 +11,153 @@
     <!-- Tabler Core CSS & Bootstrap 5 -->
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/core@1.0.0-beta20/dist/css/tabler.min.css">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
+    <!-- Select2 CSS & Bootstrap 5 Theme -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/select2-bootstrap-5-theme@1.3.0/dist/select2-bootstrap-5-theme.min.css">
     <style>
         :root {
             --tblr-font-sans-serif: 'Inter', -apple-system, BlinkMacSystemFont, San Francisco, Segoe UI, Roboto, Helvetica Neue, sans-serif;
+        }
+        /* Select2 Fixes for Tabler & Bootstrap 5 Modals */
+        select.select2-hidden-accessible {
+            position: absolute !important;
+            width: 1px !important;
+            height: 1px !important;
+            padding: 0 !important;
+            margin: -1px !important;
+            overflow: hidden !important;
+            clip: rect(0, 0, 0, 0) !important;
+            white-space: nowrap !important;
+            border: 0 !important;
+        }
+        .select2-container {
+            width: 100% !important;
+            display: block !important;
+        }
+        .select2-container--bootstrap-5 .select2-selection--single {
+            height: 42px !important;
+            padding: 0.375rem 0.75rem !important;
+            font-size: 0.875rem !important;
+            font-weight: 400 !important;
+            line-height: 1.5 !important;
+            color: #1e293b !important;
+            background-color: #ffffff !important;
+            border: 1px solid #cbd5e1 !important;
+            border-radius: 0.5rem !important;
+            display: flex !important;
+            align-items: center !important;
+        }
+        .select2-container--bootstrap-5 .select2-selection--single .select2-selection__rendered {
+            padding-left: 0 !important;
+            padding-right: 1.5rem !important;
+            color: #1e293b !important;
+            line-height: 1.5 !important;
+            white-space: nowrap !important;
+            overflow: hidden !important;
+            text-overflow: ellipsis !important;
+            width: 100% !important;
+        }
+        .select2-container--bootstrap-5 .select2-selection--single .select2-selection__placeholder {
+            color: #94a3b8 !important;
+        }
+        .select2-container--bootstrap-5.select2-container--focus .select2-selection,
+        .select2-container--bootstrap-5.select2-container--open .select2-selection {
+            border-color: #0284c7 !important;
+            box-shadow: 0 0 0 0.25rem rgba(2, 132, 199, 0.25) !important;
+            outline: 0 !important;
+        }
+
+        /* Select2 Dropdown Container Box inside Modals */
+        .modal .select2-dropdown,
+        .modal-body .select2-dropdown,
+        .select2-dropdown {
+            background-color: #ffffff !important;
+            border: 1px solid #cbd5e1 !important;
+            border-radius: 0.5rem !important;
+            box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.15), 0 8px 10px -6px rgba(0, 0, 0, 0.1) !important;
+            z-index: 1065 !important;
+            overflow: hidden !important;
+            padding: 4px 0 !important;
+        }
+
+        /* Search Input Field inside Select2 Dropdown */
+        .modal .select2-search--dropdown,
+        .select2-search--dropdown {
+            padding: 8px 10px !important;
+            background-color: #ffffff !important;
+            display: block !important;
+        }
+        .modal .select2-search--dropdown .select2-search__field,
+        .select2-search--dropdown .select2-search__field {
+            padding: 7px 12px !important;
+            font-size: 0.875rem !important;
+            color: #1e293b !important;
+            background-color: #f8fafc !important;
+            border: 1px solid #cbd5e1 !important;
+            border-radius: 0.375rem !important;
+            outline: none !important;
+            width: 100% !important;
+            box-sizing: border-box !important;
+            height: auto !important;
+            margin: 0 !important;
+        }
+        .modal .select2-search--dropdown .select2-search__field:focus,
+        .select2-search--dropdown .select2-search__field:focus {
+            border-color: #0284c7 !important;
+            background-color: #ffffff !important;
+            box-shadow: 0 0 0 0.2rem rgba(2, 132, 199, 0.2) !important;
+        }
+
+        /* Options List - Eliminate Tabler & Bootstrap UL/LI Bullet Points & Indentation */
+        .modal .select2-results__options,
+        .modal-body .select2-results__options,
+        .select2-results__options {
+            list-style: none !important;
+            list-style-type: none !important;
+            margin: 0 !important;
+            padding: 4px 0 !important;
+            max-height: 260px !important;
+            overflow-y: auto !important;
+        }
+        .modal .select2-results__option,
+        .modal-body .select2-results__option,
+        .select2-results__option {
+            list-style: none !important;
+            list-style-type: none !important;
+            margin: 0 !important;
+            padding: 8px 14px !important;
+            font-size: 0.875rem !important;
+            color: #334155 !important;
+            cursor: pointer !important;
+            user-select: none !important;
+            transition: background-color 0.15s ease, color 0.15s ease !important;
+        }
+        .modal .select2-results__option::before,
+        .modal .select2-results__option::after,
+        .select2-results__option::before,
+        .select2-results__option::after {
+            content: none !important;
+            display: none !important;
+        }
+        .select2-results__option--highlighted[aria-selected],
+        .select2-results__option--highlighted {
+            background-color: #0284c7 !important;
+            color: #ffffff !important;
+        }
+        .select2-results__option[aria-selected="true"] {
+            background-color: #e0f2fe !important;
+            color: #0369a1 !important;
+            font-weight: 600 !important;
+        }
+        .select2-results__option[aria-selected="true"].select2-results__option--highlighted {
+            background-color: #0284c7 !important;
+            color: #ffffff !important;
+        }
+        .select2-results__message {
+            padding: 12px 14px !important;
+            color: #64748b !important;
+            font-size: 0.875rem !important;
+            text-align: center !important;
         }
         body {
             font-family: var(--tblr-font-sans-serif);
@@ -74,13 +218,21 @@
         .sidebar-brand .dropdown-toggle::after {
             color: rgba(255, 255, 255, 0.6);
         }
-        .badge-role-superadmin         { background-color: #ef4444; color: #fff; }
-        .badge-role-admin_bpkd         { background-color: #06b6d4; color: #fff; }
-        .badge-role-kepala_bpkd        { background-color: #10b981; color: #fff; }
-        .badge-role-verifikator_bpkd   { background-color: #f59e0b; color: #fff; }
-        .badge-role-perencana_opd      { background-color: #3b82f6; color: #fff; }
-        .badge-role-pimpinan_eksekutif { background-color: #8b5cf6; color: #fff; }
-        .badge-role-operator_bpkd      { background-color: #0284c7; color: #fff; }
+        .badge-role-superadmin         { background-color: #dc2626 !important; color: #ffffff !important; border: 1px solid rgba(255, 255, 255, 0.25); font-weight: 600; }
+        .badge-role-admin_bpkd         { background-color: #0891b2 !important; color: #ffffff !important; border: 1px solid rgba(255, 255, 255, 0.25); font-weight: 600; }
+        .badge-role-kepala_bpkd        { background-color: #059669 !important; color: #ffffff !important; border: 1px solid rgba(255, 255, 255, 0.25); font-weight: 600; }
+        .badge-role-verifikator_bpkd   { background-color: #d97706 !important; color: #ffffff !important; border: 1px solid rgba(255, 255, 255, 0.25); font-weight: 600; }
+        .badge-role-perencana_opd      { background-color: #2563eb !important; color: #ffffff !important; border: 1px solid rgba(255, 255, 255, 0.25); font-weight: 600; }
+        .badge-role-pimpinan_eksekutif { background-color: #7c3aed !important; color: #ffffff !important; border: 1px solid rgba(255, 255, 255, 0.25); font-weight: 600; }
+        .badge-role-operator_bpkd      { background-color: #0284c7 !important; color: #ffffff !important; border: 1px solid rgba(255, 255, 255, 0.25); font-weight: 600; }
+        
+        .badge-skpk-header {
+            background-color: rgba(255, 255, 255, 0.15) !important;
+            color: #ffffff !important;
+            border: 1px solid rgba(255, 255, 255, 0.3) !important;
+            font-weight: 600;
+            backdrop-filter: blur(4px);
+        }
         
         .stat-card-gradient-1 { background: linear-gradient(135deg, #0ea5e9 0%, #2563eb 100%); color: #fff; }
         .stat-card-gradient-2 { background: linear-gradient(135deg, #10b981 0%, #059669 100%); color: #fff; }
@@ -269,10 +421,24 @@
                     </a>
                 </h1>
                 
+                <?php
+                if (!isset($activeYearData)) {
+                    if (isset($active_year) && is_array($active_year)) {
+                        $activeYearData = $active_year;
+                    } elseif (isset($activeYear) && is_array($activeYear)) {
+                        $activeYearData = $activeYear;
+                    } else {
+                        $tahunModel = new \App\Models\TahunAnggaranModel();
+                        $activeYearData = $tahunModel->getActiveYear() ?? [];
+                    }
+                }
+                $tahunAktif = esc($activeYearData['tahun'] ?? '2026');
+                $statusTahapan = esc(ucwords($activeYearData['status_tahapan'] ?? 'Pergeseran'));
+                ?>
                 <div class="px-3 py-2 my-2 bg-dark rounded border border-secondary border-opacity-25 text-white-50 fs-6">
                     <div class="d-flex justify-content-between align-items-center flex-wrap gap-1">
-                        <span><i class="bi bi-calendar-check text-info me-1"></i> TA 2026</span>
-                        <span class="badge bg-warning text-dark px-2">Digitalisasi penganggaran</span>
+                        <span><i class="bi bi-calendar-check text-info me-1"></i> TA <?= $tahunAktif ?></span>
+                        <span class="badge bg-warning text-dark px-2"><?= $statusTahapan ?></span>
                     </div>
                 </div>
 
@@ -571,7 +737,9 @@
         </div>
     </div>
 
-    <!-- Tabler JS Bundle (Includes Bootstrap 5 JS) -->
+    <!-- jQuery & Select2 JS Bundle -->
+    <script src="https://cdn.jsdelivr.net/npm/jquery@3.7.1/dist/jquery.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/@tabler/core@1.0.0-beta20/dist/js/tabler.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
 </body>
 </html>

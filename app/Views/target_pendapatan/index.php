@@ -8,12 +8,22 @@
             <div class="card-body p-4 p-md-5">
                 <div class="row align-items-center">
                     <div class="col-lg-8">
-                        <div class="d-flex align-items-center gap-2 mb-2 flex-wrap">
-                            <span class="badge bg-white bg-opacity-20 text-white px-3 py-1.5 fs-6 rounded-pill">
-                                <i class="bi bi-graph-up-arrow me-1"></i> APBK (Target)
+                        <div class="d-flex align-items-center gap-2 mb-3 flex-wrap">
+                            <?php 
+                            $roleName = session()->get('role_name') ?? ucfirst($roleCode ?? 'User');
+                            $userSkpdName = session()->get('nama_skpd') ?? 'Pemerintah Daerah';
+                            ?>
+                            <span class="badge badge-role-<?= esc($roleCode ?? 'user') ?> px-3 py-2 fs-6 rounded-pill shadow-sm">
+                                <i class="bi bi-shield-check me-1"></i> Role: <?= esc($roleName) ?>
                             </span>
-                            <span class="badge bg-warning text-dark px-3 py-1.5 fs-6 rounded-pill fw-bold">
-                                TA <?= esc($activeYear['tahun'] ?? date('Y')) ?> - Status: <?= esc(strtoupper($activeYear['status_tahapan'] ?? 'PENYUSUNAN')) ?>
+                            <span class="badge badge-skpk-header px-3 py-2 fs-6 rounded-pill shadow-sm">
+                                <i class="bi bi-building me-1 text-info"></i> SKPK: <?= esc($userSkpdName) ?>
+                            </span>
+                            <span class="badge bg-white text-dark px-3 py-2 fs-6 rounded-pill fw-bold shadow-sm" style="background-color: #ffffff !important; color: #0f172a !important; border: 1px solid #cbd5e1;">
+                                <i class="bi bi-calendar3 me-1 text-primary"></i> TA <?= esc($activeYear['tahun'] ?? date('Y')) ?>
+                            </span>
+                            <span class="badge bg-warning text-dark px-3 py-2 fs-6 rounded-pill fw-bold shadow-sm" style="background-color: #f59e0b !important; color: #0f172a !important; border: 1px solid #d97706;">
+                                <i class="bi bi-clock-history me-1"></i> Tahap: <?= esc(strtoupper($activeYear['status_tahapan'] ?? 'PENYUSUNAN')) ?>
                             </span>
                         </div>
                         <h2 class="fw-bold mb-1 text-white">Target Pendapatan Daerah</h2>
@@ -173,6 +183,7 @@
                         <th class="text-end">Target Murni (Rp)</th>
                         <th class="text-end">Target Pergeseran (Rp)</th>
                         <th class="text-end">Target Perubahan (Rp)</th>
+                        <th class="text-end">Target Pergeseran Stl Perubahan (Rp)</th>
                         <th class="text-center">Keterangan</th>
                         <th class="text-center" style="width: 110px;">Aksi</th>
                     </tr>
@@ -180,7 +191,7 @@
                 <tbody>
                     <?php if (empty($targets)): ?>
                         <tr>
-                            <td colspan="8" class="text-center py-5 text-muted">
+                            <td colspan="9" class="text-center py-5 text-muted">
                                 <i class="bi bi-inbox fs-1 d-block mb-2 text-secondary"></i>
                                 Tidak ada data Target Pendapatan ditemukan.
                             </td>
@@ -193,14 +204,14 @@
                             <tr>
                                 <td class="text-center fw-semibold text-secondary"><?= $no++ ?></td>
                                 <td>
-                                    <span class="badge bg-secondary-subtle text-secondary border px-2 py-1 mb-1 d-inline-block">
-                                        <?= esc($item['kode_skpd'] ?? '-') ?>
+                                    <span class="badge bg-primary-subtle text-primary border border-primary-subtle px-2 py-1 mb-1 d-inline-block fw-bold">
+                                        <i class="bi bi-building me-1"></i><?= esc($item['kode_skpd'] ?? '-') ?>
                                     </span>
                                     <div class="fw-bold text-dark"><?= esc($item['nama_skpd'] ?? 'Semua SKPD') ?></div>
                                 </td>
                                 <td>
-                                    <span class="badge bg-info-subtle text-info-emphasis border border-info-subtle px-2 py-1 me-1 mb-1 d-inline-block">
-                                        <i class="bi bi-tag-fill me-1"></i><?= esc($item['kode_sub_rincian_objek'] ?? '-') ?>
+                                    <span class="badge bg-dark-subtle text-dark border border-secondary-subtle px-2 py-1 me-1 mb-1 d-inline-block fw-semibold">
+                                        <i class="bi bi-hash me-1 text-primary"></i><?= esc($item['kode_sub_rincian_objek'] ?? '-') ?>
                                     </span>
                                     <div class="fw-semibold text-dark"><?= esc($item['nama_sub_rincian_objek'] ?? '-') ?></div>
                                     <?php if (!empty($item['nama_rincian_objek'])): ?>
@@ -216,6 +227,9 @@
                                 <td class="text-end fw-bold text-warning-emphasis">
                                     Rp <?= number_format($item['target_perubahan'], 2, ',', '.') ?>
                                 </td>
+                                <td class="text-end fw-bold text-info">
+                                    Rp <?= number_format($item['target_pergeseran_setelah_perubahan'] ?? 0, 2, ',', '.') ?>
+                                </td>
                                 <td class="text-center">
                                     <small class="text-secondary"><?= esc($item['keterangan'] ?: '-') ?></small>
                                 </td>
@@ -229,6 +243,7 @@
                                                     data-target_murni="<?= $item['target_murni'] ?>"
                                                     data-target_pergeseran="<?= $item['target_pergeseran'] ?>"
                                                     data-target_perubahan="<?= $item['target_perubahan'] ?>"
+                                                    data-target_pergeseran_setelah_perubahan="<?= $item['target_pergeseran_setelah_perubahan'] ?? 0 ?>"
                                                     data-keterangan="<?= esc($item['keterangan']) ?>"
                                                     title="Edit Target">
                                                 <i class="bi bi-pencil-square"></i>
@@ -267,7 +282,7 @@
 
 <!-- Modal Tambah Target -->
 <div class="modal fade" id="addTargetModal" tabindex="-1" aria-labelledby="addTargetModalLabel" aria-hidden="true">
-    <div class="modal-dialog modal-lg modal-dialog-centered">
+    <div class="modal-dialog modal-xl modal-dialog-centered">
         <div class="modal-content border-0 shadow rounded-4">
             <div class="modal-header bg-success text-white rounded-top-4">
                 <h5 class="modal-title fw-bold" id="addTargetModalLabel">
@@ -279,10 +294,11 @@
                 <?= csrf_field() ?>
                 <div class="modal-body p-4">
                     <div class="row g-3">
-                        <div class="col-md-6">
+                        <!-- Combo 1: SKPD / OPD Pengelola (Memenuhi baris pertama modal) -->
+                        <div class="col-12">
                             <label class="form-label fw-semibold">SKPD / OPD Pengelola <span class="text-danger">*</span></label>
-                            <select name="skpd_id" class="form-select" required>
-                                <option value="">-- Pilih SKPD --</option>
+                            <select name="skpd_id" id="add_skpd_id" class="select2-searchable" required>
+                                <option value="">-- Pilih / Cari SKPD --</option>
                                 <?php foreach ($skpdList as $skpd): ?>
                                     <option value="<?= $skpd['id'] ?>" <?= ($userSkpdId == $skpd['id']) ? 'selected' : '' ?>>
                                         [<?= esc($skpd['kode_skpd']) ?>] <?= esc($skpd['nama_skpd']) ?>
@@ -291,10 +307,11 @@
                             </select>
                         </div>
 
-                        <div class="col-md-6">
+                        <!-- Combo 2: Rekening Pendapatan (Dipindahkan ke baris bawahnya) -->
+                        <div class="col-12">
                             <label class="form-label fw-semibold">Rekening Pendapatan <span class="text-danger">*</span></label>
-                            <select name="sub_rincian_objek_id" class="form-select" required>
-                                <option value="">-- Pilih Rekening Sub Rincian --</option>
+                            <select name="sub_rincian_objek_id" id="add_sub_rincian_objek_id" class="select2-searchable" required>
+                                <option value="">-- Pilih / Cari Rekening Sub Rincian --</option>
                                 <?php foreach ($subRincianList as $sub): ?>
                                     <option value="<?= $sub['id'] ?>">
                                         [<?= esc($sub['kode_sub_rincian_objek']) ?>] <?= esc($sub['nama_sub_rincian_objek']) ?>
@@ -303,19 +320,25 @@
                             </select>
                         </div>
 
-                        <div class="col-md-4">
+                        <!-- Target Input Textboxes dengan format ribuan -->
+                        <div class="col-md-3">
                             <label class="form-label fw-semibold">Target Murni (Rp) <span class="text-danger">*</span></label>
-                            <input type="number" step="0.01" min="0" name="target_murni" class="form-control" placeholder="0.00" required>
+                            <input type="text" name="target_murni" id="add_target_murni" class="form-control currency-input" placeholder="0" required>
                         </div>
 
-                        <div class="col-md-4">
+                        <div class="col-md-3">
                             <label class="form-label fw-semibold">Target Pergeseran (Rp)</label>
-                            <input type="number" step="0.01" min="0" name="target_pergeseran" class="form-control" placeholder="Kosongkan jika sama">
+                            <input type="text" name="target_pergeseran" id="add_target_pergeseran" class="form-control currency-input" placeholder="Kosongkan jika sama">
                         </div>
 
-                        <div class="col-md-4">
+                        <div class="col-md-3">
                             <label class="form-label fw-semibold">Target Perubahan (Rp)</label>
-                            <input type="number" step="0.01" min="0" name="target_perubahan" class="form-control" placeholder="Kosongkan jika sama">
+                            <input type="text" name="target_perubahan" id="add_target_perubahan" class="form-control currency-input" placeholder="Kosongkan jika sama">
+                        </div>
+
+                        <div class="col-md-3">
+                            <label class="form-label fw-semibold">Target Pergeseran Stl Perubahan (Rp)</label>
+                            <input type="text" name="target_pergeseran_setelah_perubahan" id="add_target_pergeseran_setelah_perubahan" class="form-control currency-input" placeholder="Kosongkan jika sama">
                         </div>
 
                         <div class="col-12">
@@ -337,7 +360,7 @@
 
 <!-- Modal Edit Target -->
 <div class="modal fade" id="editTargetModal" tabindex="-1" aria-labelledby="editTargetModalLabel" aria-hidden="true">
-    <div class="modal-dialog modal-lg modal-dialog-centered">
+    <div class="modal-dialog modal-xl modal-dialog-centered">
         <div class="modal-content border-0 shadow rounded-4">
             <div class="modal-header bg-warning text-dark rounded-top-4">
                 <h5 class="modal-title fw-bold" id="editTargetModalLabel">
@@ -349,10 +372,10 @@
                 <?= csrf_field() ?>
                 <div class="modal-body p-4">
                     <div class="row g-3">
-                        <div class="col-md-6">
+                        <div class="col-12">
                             <label class="form-label fw-semibold">SKPD / OPD Pengelola <span class="text-danger">*</span></label>
-                            <select name="skpd_id" id="edit_skpd_id" class="form-select" required>
-                                <option value="">-- Pilih SKPD --</option>
+                            <select name="skpd_id" id="edit_skpd_id" class="select2-searchable" required>
+                                <option value="">-- Pilih / Cari SKPD --</option>
                                 <?php foreach ($skpdList as $skpd): ?>
                                     <option value="<?= $skpd['id'] ?>">
                                         [<?= esc($skpd['kode_skpd']) ?>] <?= esc($skpd['nama_skpd']) ?>
@@ -361,10 +384,10 @@
                             </select>
                         </div>
 
-                        <div class="col-md-6">
+                        <div class="col-12">
                             <label class="form-label fw-semibold">Rekening Pendapatan <span class="text-danger">*</span></label>
-                            <select name="sub_rincian_objek_id" id="edit_sub_rincian_objek_id" class="form-select" required>
-                                <option value="">-- Pilih Rekening Sub Rincian --</option>
+                            <select name="sub_rincian_objek_id" id="edit_sub_rincian_objek_id" class="select2-searchable" required>
+                                <option value="">-- Pilih / Cari Rekening Sub Rincian --</option>
                                 <?php foreach ($subRincianList as $sub): ?>
                                     <option value="<?= $sub['id'] ?>">
                                         [<?= esc($sub['kode_sub_rincian_objek']) ?>] <?= esc($sub['nama_sub_rincian_objek']) ?>
@@ -373,19 +396,24 @@
                             </select>
                         </div>
 
-                        <div class="col-md-4">
+                        <div class="col-md-3">
                             <label class="form-label fw-semibold">Target Murni (Rp) <span class="text-danger">*</span></label>
-                            <input type="number" step="0.01" min="0" name="target_murni" id="edit_target_murni" class="form-control" required>
+                            <input type="text" name="target_murni" id="edit_target_murni" class="form-control currency-input" required>
                         </div>
 
-                        <div class="col-md-4">
+                        <div class="col-md-3">
                             <label class="form-label fw-semibold">Target Pergeseran (Rp)</label>
-                            <input type="number" step="0.01" min="0" name="target_pergeseran" id="edit_target_pergeseran" class="form-control">
+                            <input type="text" name="target_pergeseran" id="edit_target_pergeseran" class="form-control currency-input">
                         </div>
 
-                        <div class="col-md-4">
+                        <div class="col-md-3">
                             <label class="form-label fw-semibold">Target Perubahan (Rp)</label>
-                            <input type="number" step="0.01" min="0" name="target_perubahan" id="edit_target_perubahan" class="form-control">
+                            <input type="text" name="target_perubahan" id="edit_target_perubahan" class="form-control currency-input">
+                        </div>
+
+                        <div class="col-md-3">
+                            <label class="form-label fw-semibold">Target Pergeseran Stl Perubahan (Rp)</label>
+                            <input type="text" name="target_pergeseran_setelah_perubahan" id="edit_target_pergeseran_setelah_perubahan" class="form-control currency-input">
                         </div>
 
                         <div class="col-12">
@@ -430,9 +458,77 @@
     </div>
 </div>
 
-<!-- Dynamic Modal Script -->
+<!-- Dynamic Modal Script & Formatting -->
 <script>
 document.addEventListener('DOMContentLoaded', function () {
+    // Helper function format ribuan (Indonesian Thousands Separator)
+    function formatRibuan(val) {
+        if (val === null || val === undefined || val === '') return '';
+        let strVal = val.toString().replace(/[^0-9.]/g, '');
+        if (!strVal) return '';
+        
+        let parts = strVal.split('.');
+        let integerPart = parts[0];
+        if (!integerPart) return '';
+        
+        let formattedInt = parseInt(integerPart, 10).toLocaleString('id-ID');
+        if (parts.length > 1 && parts[1] !== '') {
+            return formattedInt + ',' + parts[1].substring(0, 2);
+        }
+        return formattedInt;
+    }
+
+    // Attach dynamic live formatting to all currency inputs
+    document.querySelectorAll('.currency-input').forEach(input => {
+        input.addEventListener('input', function () {
+            let rawDigits = this.value.replace(/[^0-9]/g, '');
+            if (!rawDigits) {
+                this.value = '';
+                return;
+            }
+            let formatted = parseInt(rawDigits, 10).toLocaleString('id-ID');
+            this.value = formatted;
+        });
+    });
+
+    // Helper to initialize Select2 on a modal container
+    function setupModalSelect2(modalEl) {
+        if (typeof $ !== 'undefined' && $.fn.select2) {
+            $(modalEl).find('.select2-searchable').each(function() {
+                if (!$(this).data('select2')) {
+                    $(this).select2({
+                        theme: 'bootstrap-5',
+                        dropdownParent: $(modalEl),
+                        width: '100%',
+                        placeholder: '-- Pilih / Cari --'
+                    });
+                }
+            });
+        }
+    }
+
+    // Initialize Select2 when modals open
+    const addTargetModalEl = document.getElementById('addTargetModal');
+    if (addTargetModalEl) {
+        addTargetModalEl.addEventListener('show.bs.modal', function () {
+            setupModalSelect2(addTargetModalEl);
+        });
+        addTargetModalEl.addEventListener('shown.bs.modal', function () {
+            setupModalSelect2(addTargetModalEl);
+        });
+    }
+
+    const editTargetModalEl = document.getElementById('editTargetModal');
+    if (editTargetModalEl) {
+        editTargetModalEl.addEventListener('show.bs.modal', function () {
+            setupModalSelect2(editTargetModalEl);
+        });
+        editTargetModalEl.addEventListener('shown.bs.modal', function () {
+            setupModalSelect2(editTargetModalEl);
+        });
+    }
+
+    // Edit modal handler
     const editBtns = document.querySelectorAll('.edit-btn');
     editBtns.forEach(btn => {
         btn.addEventListener('click', function () {
@@ -442,21 +538,34 @@ document.addEventListener('DOMContentLoaded', function () {
             const targetMurni = this.getAttribute('data-target_murni');
             const targetPergeseran = this.getAttribute('data-target_pergeseran');
             const targetPerubahan = this.getAttribute('data-target_perubahan');
+            const targetPergeseranSetelahPerubahan = this.getAttribute('data-target_pergeseran_setelah_perubahan');
             const keterangan = this.getAttribute('data-keterangan');
 
             document.getElementById('editTargetForm').action = '<?= base_url('/target-pendapatan/update/') ?>' + id;
-            document.getElementById('edit_skpd_id').value = skpdId;
-            document.getElementById('edit_sub_rincian_objek_id').value = subRincianId;
-            document.getElementById('edit_target_murni').value = targetMurni;
-            document.getElementById('edit_target_pergeseran').value = targetPergeseran;
-            document.getElementById('edit_target_perubahan').value = targetPerubahan;
+            
+            // Ensure select2 is setup first
+            setupModalSelect2(editTargetModalEl);
+
+            // Set select values and trigger change for Select2
+            const editSkpdSelect = $('#edit_skpd_id');
+            const editSubSelect = $('#edit_sub_rincian_objek_id');
+
+            editSkpdSelect.val(skpdId).trigger('change');
+            editSubSelect.val(subRincianId).trigger('change');
+
+            // Format target textboxes with thousands separator
+            document.getElementById('edit_target_murni').value = formatRibuan(targetMurni);
+            document.getElementById('edit_target_pergeseran').value = formatRibuan(targetPergeseran);
+            document.getElementById('edit_target_perubahan').value = formatRibuan(targetPerubahan);
+            document.getElementById('edit_target_pergeseran_setelah_perubahan').value = formatRibuan(targetPergeseranSetelahPerubahan);
             document.getElementById('edit_keterangan').value = keterangan;
 
-            const editModal = new bootstrap.Modal(document.getElementById('editTargetModal'));
+            const editModal = new bootstrap.Modal(editTargetModalEl);
             editModal.show();
         });
     });
 
+    // Delete modal handler
     const deleteBtns = document.querySelectorAll('.delete-btn');
     deleteBtns.forEach(btn => {
         btn.addEventListener('click', function () {
